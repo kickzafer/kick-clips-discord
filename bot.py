@@ -31,23 +31,34 @@ if old_id != latest_id:
 
     title = latest.get("title", "Yeni Klip")
     clip_id = latest["id"]
-
     clip_url = f"https://kick.com/kickzafer/clips/{clip_id}"
 
     thumbnail = latest.get("thumbnail_url", "")
+    creator = latest.get("creator", {}).get("username", "Bilinmiyor")
 
     payload = {
         "username": "Zafer Yayından Klipler",
         "avatar_url": latest["channel"]["profile_picture"],
         "embeds": [
             {
-                "title": title,
+                "title": f"🎬 {title}",
                 "url": clip_url,
-                "description": "🎬 Yeni Kick klibi oluşturuldu!",
                 "color": 65280,
                 "image": {
                     "url": thumbnail
                 },
+                "fields": [
+                    {
+                        "name": "👤 Klibi Alan Kişi",
+                        "value": creator,
+                        "inline": False
+                    },
+                    {
+                        "name": "🔗 Klip Linki",
+                        "value": clip_url,
+                        "inline": False
+                    }
+                ],
                 "footer": {
                     "text": "Kick Klip Bildirimi"
                 }
