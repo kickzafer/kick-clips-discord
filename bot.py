@@ -1,5 +1,6 @@
 import requests
 import os
+from datetime import datetime
 
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK"]
 
@@ -36,6 +37,20 @@ if old_id != latest_id:
     thumbnail = latest.get("thumbnail_url", "")
     creator = latest.get("creator", {}).get("username", "Bilinmiyor")
 
+    views = latest.get("views", 0)
+    likes = latest.get("likes", 0)
+    duration = latest.get("duration", 0)
+
+    category = latest.get("category", {}).get("name", "Bilinmiyor")
+
+    created_at = latest.get("created_at", "")
+    try:
+        tarih = datetime.fromisoformat(
+            created_at.replace("Z", "+00:00")
+        ).strftime("%d.%m.%Y %H:%M")
+    except:
+        tarih = created_at
+
     payload = {
         "username": "Zafer Yayından Klipler",
         "avatar_url": latest["channel"]["profile_picture"],
@@ -51,7 +66,32 @@ if old_id != latest_id:
                     {
                         "name": "👤 Klibi Alan Kişi",
                         "value": creator,
-                        "inline": False
+                        "inline": True
+                    },
+                    {
+                        "name": "🎮 Oynanan Kategori",
+                        "value": category,
+                        "inline": True
+                    },
+                    {
+                        "name": "👀 İzlenme Sayısı",
+                        "value": str(views),
+                        "inline": True
+                    },
+                    {
+                        "name": "❤️ Beğeni Sayısı",
+                        "value": str(likes),
+                        "inline": True
+                    },
+                    {
+                        "name": "⏱️ Klip Süresi",
+                        "value": f"{duration} saniye",
+                        "inline": True
+                    },
+                    {
+                        "name": "📅 Oluşturulma Tarihi",
+                        "value": tarih,
+                        "inline": True
                     },
                     {
                         "name": "🔗 Klip Linki",
