@@ -4,6 +4,7 @@ import os
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK"]
 
 API_URL = "https://kick.com/api/v2/channels/kickzafer/clips"
+
 LAST_ID_FILE = "last_id.txt"
 
 response = requests.get(API_URL, timeout=30)
@@ -30,10 +31,28 @@ if old_id != latest_id:
 
     title = latest.get("title", "Yeni Klip")
     clip_id = latest["id"]
+
     clip_url = f"https://kick.com/kickzafer/clips/{clip_id}"
 
+    thumbnail = latest.get("thumbnail_url", "")
+
     payload = {
-        "content": f"🎬 Yeni Kick klibi!\n**{title}**\n{clip_url}"
+        "username": "Zafer Yayından Klipler",
+        "avatar_url": latest["channel"]["profile_picture"],
+        "embeds": [
+            {
+                "title": title,
+                "url": clip_url,
+                "description": "🎬 Yeni Kick klibi oluşturuldu!",
+                "color": 65280,
+                "image": {
+                    "url": thumbnail
+                },
+                "footer": {
+                    "text": "Kick Klip Bildirimi"
+                }
+            }
+        ]
     }
 
     requests.post(WEBHOOK_URL, json=payload, timeout=30)
