@@ -4,7 +4,7 @@ import os
 
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK"]
 
-API_URL = "https://kick.com/api/v2/channels/kickzafer/videos"
+API_URL = "https://kick.com/api/v2/channels/kickzafer/clips"
 
 LAST_ID_FILE = "last_id.txt"
 
@@ -13,11 +13,13 @@ response.raise_for_status()
 
 data = response.json()
 
-if not data:
-    print("Veri bulunamadı.")
+clips = data.get("clips", [])
+
+if not clips:
+    print("Klip bulunamadı.")
     exit()
 
-latest = data[0]
+latest = clips[0]
 latest_id = str(latest["id"])
 
 old_id = None
@@ -29,9 +31,8 @@ if os.path.exists(LAST_ID_FILE):
 if old_id != latest_id:
 
     title = latest.get("session_title", "Yeni Klip")
-    slug = latest.get("slug", "")
-
-    clip_url = f"https://kick.com/kickzafer/videos/{slug}"
+    clip_id = latest["id"]
+clip_url = f"https://kick.com/kickzafer/clips/{clip_id}"
 
     payload = {
         "content": f"🎬 Yeni Kick klibi!\n**{title}**\n{clip_url}"
